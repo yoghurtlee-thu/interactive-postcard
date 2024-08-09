@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Postcard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .postcard {
+            width: 850px;
+            height: 500px;
+            perspective: 1200px;
+        }
+
+        .postcard-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            transform-origin: center;
+        }
+
+        .postcard-front,
+        .postcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+        }
+
+        .postcard-front {
+            /* 正面的背景图片 */
+            background: url('./img/post-front.webp') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .postcard-front::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            z-index: 1;
+        }
+
+        .theme-text {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .logo {
+            position: absolute;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .logo img {
+            max-width: 100px;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .logo img:hover {
+            transform: scale(1.15);
+            opacity: 0.9;
+        }
+
+        .logo:hover::after {
+            content: 'Click to flip!';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 3;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .postcard-back {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .header {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .message {
+            font-size: 20px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .footer {
+            font-size: 16px;
+            color: #666;
+            text-align: right;
+            margin-top: auto;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            /* 背面右上角的邮票 */
+            background: url('./img/stamp.webp') no-repeat center center;
+            background-size: cover;
+            border: 1px solid #444444;
+            border-radius: 10%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.276);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .stamp:hover {
+            transform: scale(1.1);
+        }
+
+        .postmark {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 175px;
+            height: 175px;
+            /* 正面右下角的邮戳 */
+            background: url('./img/postmark.webp') no-repeat center center;
+            background-size: cover;
+            border-radius: 50%;
+            opacity: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: rotate(-25deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="postcard">
+        <div class="postcard-inner">
+            <div class="postcard-front">
+                <div class="theme-text">Your Title Here</div>
+                <div class="logo">
+                    <!-- 正面中央的徽标 -->
+                    <img src="./img/favicon.webp" alt="Logo" id="flip-button" title="Click to flip!">
+                </div>
+                <div class="postmark"></div>
+            </div>
+            <div class="postcard-back">
+                <div class="header">
+                    🎉 Your Title Here 🎉
+                </div>
+                <div class="message">
+                    [问候语]
+                    <br><br>
+                    [内容，记得使用换行符分段]
+                    <br><br>
+                    [您的名字]
+                    <br>
+                    [日期]
+                </div>
+                <div class="footer">
+                    P.S. [附言]
+                </div>
+                <div class="stamp"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('flip-button').addEventListener('click', function () {
+            var postcardInner = document.querySelector('.postcard-inner');
+            postcardInner.style.transform = postcardInner.style.transform === 'rotateY(180deg)' ? 'rotateY(0deg)' : 'rotateY(180deg)';
+        });
+    </script>
+</body>
+
+</html>
